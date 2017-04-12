@@ -9,4 +9,7 @@ bin/*
 plugins/*
 platforms/*
 
+# Libraries
+www/lib/*
+
 # End of https://www.gitignore.io/api/apachecordova
