@@ -3,27 +3,32 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 export class User {
-  name: string;
+  username: string;
   email: string;
+  firstname: string;
+  lastname: string;
+  password: string;
+  hey: string;
 
-  constructor(name: string, email: string) {
-    this.name = name;
-    this.email = email;
+  constructor(username: string, password: string) {
+    this.username = username;
+    this.password = password;
   }
 }
 
 @Injectable()
 export class AuthService {
   currentUser: User;
+  token: string;
 
   public login(credentials) {
-    if (credentials.email === null || credentials.password === null) {
+    if (credentials.username === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
     } else {
       return Observable.create(observer => {
         // At this point make a request to your backend to make a real check!
-        let access = (credentials.password === "pass" && credentials.email === "email");
-        this.currentUser = new User('Simon', 'saimon@devdactic.com');
+        let access = (credentials.username === "alex" && credentials.password === "test12345");
+        this.currentUser = new User('alex', 'test12345');
         observer.next(access);
         observer.complete();
       });
@@ -31,7 +36,7 @@ export class AuthService {
   }
 
   public register(credentials) {
-    if (credentials.email === null || credentials.password === null) {
+    if (credentials.username === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
     } else {
       // At this point store the credentials to your backend!

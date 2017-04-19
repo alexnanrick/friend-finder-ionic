@@ -10,9 +10,14 @@ import { HomePage } from '../home/home';
 })
 export class LoginPage {
   loading: Loading;
-  registerCredentials = {email: '', password: ''};
+  registerCredentials = {username: '', password: ''};
  
-  constructor(private nav: NavController, private auth: AuthService, private alertCtrl: AlertController, private loadingCtrl: LoadingController) {}
+  constructor(
+    private nav: NavController, 
+    private auth: AuthService, 
+    private alertCtrl: AlertController, 
+    private loadingCtrl: LoadingController
+  ) {}
  
   public createAccount() {
     this.nav.push(RegisterPage);
@@ -20,11 +25,12 @@ export class LoginPage {
  
   public login() {
     this.showLoading()
-    this.auth.login(this.registerCredentials).subscribe(allowed => {
+    this.auth.login(this.registerCredentials)
+    .subscribe(allowed => {
       if (allowed) {
         setTimeout(() => {
-        this.loading.dismiss();
-        this.nav.setRoot(HomePage)
+          this.loading.dismiss();
+          this.nav.setRoot(HomePage)
         });
       } else {
         this.showError("Access Denied");
