@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
+import { baseUrl } from '../config/config'
+import 'rxjs';
 
 export class User {
   username: string;
@@ -20,17 +22,27 @@ export class User {
 export class AuthService {
   currentUser: User;
   token: string;
+  
+  constructor(private http: Http) {
+    this.http = http;
+  }
 
   public login(credentials) {
     if (credentials.username === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
     } else {
       return Observable.create(observer => {
-        // At this point make a request to your backend to make a real check!
-        let access = (credentials.username === "alex" && credentials.password === "test12345");
-        this.currentUser = new User('alex', 'test12345');
-        observer.next(access);
-        observer.complete();
+        // At this point make a request to your backend to make a real check!    
+        let loginUrl = `${baseUrl}/tokenlogin/?username=${credentials.username}&password=${credentials.password}`;
+        this.http.get(loginUrl)
+        .map(res => res.json().token)
+        .subscribe(token => {
+          console.log(token);
+          observer.next(true);
+          observer.complete();  
+        }, err => {
+          observer.next(false);
+        })
       });
     }
   }
