@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { mapUrl } from '../../config/config'
 import * as L from 'leaflet';
 
 @Component({
@@ -6,8 +7,7 @@ import * as L from 'leaflet';
   templateUrl: 'home.html'
 })
 export class HomePage {
-  mapUrlLive = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoiem9udHppcCIsImEiOiJjajFtbGJrYjEwMDAxMzNvdGs4OXByM2dhIn0.hzPQNENTIuVgt7fPXsUD5Q';
-  mapUrlDev = 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
+  
   map;
 
   constructor() {
@@ -19,7 +19,7 @@ export class HomePage {
 
   show_map() {
     this.map = L.map('map').setView([53.3, -6.3], 5);
-    L.tileLayer(this.mapUrlDev, {'detectRetina': true})
+    L.tileLayer(mapUrl, {'detectRetina': true})
       .addTo(this.map);
   }
 }
