@@ -1,16 +1,19 @@
 import { Component } from '@angular/core';
+import { Storage } from '@ionic/storage';
 import { mapUrl } from '../../config/config'
 import * as L from 'leaflet';
+
+import { TokenService } from '../../providers/token-service';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  
-  map;
+  private map;
 
-  constructor() {
+  constructor(private tokenManager: TokenService) {
+    this.tokenManager.getToken;
   }
 
   ionViewDidLoad() {

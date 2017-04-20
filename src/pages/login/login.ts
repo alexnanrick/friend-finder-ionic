@@ -1,8 +1,12 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController, LoadingController, Loading } from 'ionic-angular';
-import { AuthService } from '../../providers/auth-service';
+import { Storage } from '@ionic/storage';
+
 import { RegisterPage } from '../register/register';
 import { HomePage } from '../home/home';
+
+import { AuthService } from '../../providers/auth-service';
+import { TokenService } from '../../providers/token-service';
  
 @Component({
   selector: 'page-login',
@@ -10,14 +14,18 @@ import { HomePage } from '../home/home';
 })
 export class LoginPage {
   loading: Loading;
-  registerCredentials = {username: '', password: ''};
+  registerCredentials = {username: 'alex', password: 'test12345'};
  
   constructor(
     private nav: NavController, 
     private auth: AuthService, 
     private alertCtrl: AlertController, 
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private tokenManager: TokenService
   ) {}
+ 
+  ionViewDidLoad() {
+  }
  
   public createAccount() {
     this.nav.push(RegisterPage);

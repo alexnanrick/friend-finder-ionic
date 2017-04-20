@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
+import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs/Observable';
 import { baseUrl } from '../config/config'
 import 'rxjs';
+
+import { TokenService } from './token-service';
 
 export class User {
   username: string;
@@ -10,10 +13,13 @@ export class User {
   firstname: string;
   lastname: string;
   password: string;
-  hey: string;
 
-  constructor(username: string, password: string) {
+  constructor(username: string, email: string, firstname: string, 
+    lastname: string, password: string) {
     this.username = username;
+    this.email = email;
+    this.firstname = firstname;
+    this.lastname = lastname;
     this.password = password;
   }
 }
@@ -23,9 +29,7 @@ export class AuthService {
   currentUser: User;
   token: string;
   
-  constructor(private http: Http) {
-    this.http = http;
-  }
+  constructor(private http: Http, private tokenManager: TokenService) {}
 
   public login(credentials) {
     if (credentials.username === null || credentials.password === null) {
@@ -38,6 +42,7 @@ export class AuthService {
         .map(res => res.json().token)
         .subscribe(token => {
           console.log(token);
+          this.tokenManager.setToken(token);
           observer.next(true);
           observer.complete();  
         }, err => {
