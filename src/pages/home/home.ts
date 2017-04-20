@@ -3,7 +3,7 @@ import { Storage } from '@ionic/storage';
 import { mapUrl } from '../../config/config'
 import * as L from 'leaflet';
 
-import { TokenService } from '../../providers/token-service';
+import { AuthService } from '../../providers/auth-service';
 
 @Component({
   selector: 'page-home',
@@ -12,8 +12,11 @@ import { TokenService } from '../../providers/token-service';
 export class HomePage {
   private map;
 
-  constructor(private tokenManager: TokenService) {
-    this.tokenManager.getToken;
+  constructor(private auth: AuthService) {
+    let user = this.auth.getUserInfo();
+    console.log(user);
+    let token = this.auth.getToken();
+    console.log("Home token: " + token);
   }
 
   ionViewDidLoad() {

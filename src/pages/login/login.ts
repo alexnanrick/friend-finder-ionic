@@ -6,7 +6,6 @@ import { RegisterPage } from '../register/register';
 import { HomePage } from '../home/home';
 
 import { AuthService } from '../../providers/auth-service';
-import { TokenService } from '../../providers/token-service';
  
 @Component({
   selector: 'page-login',
@@ -20,8 +19,7 @@ export class LoginPage {
     private nav: NavController, 
     private auth: AuthService, 
     private alertCtrl: AlertController, 
-    private loadingCtrl: LoadingController,
-    private tokenManager: TokenService
+    private loadingCtrl: LoadingController
   ) {}
  
   ionViewDidLoad() {

@@ -11,7 +11,6 @@ import { LoginPage } from "../pages/login/login"
 import { RegisterPage } from "../pages/register/register"
 
 import { AuthService } from '../providers/auth-service';
-import { TokenService } from '../providers/token-service';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -43,8 +42,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    AuthService,
-    TokenService
+    AuthService
   ]
 })
 export class AppModule {}

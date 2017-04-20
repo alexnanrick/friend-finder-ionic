@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
+import { Headers } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs/Observable';
 import { baseUrl } from '../config/config'
 import 'rxjs';
-
-import { TokenService } from './token-service';
 
 export class User {
   username: string;
@@ -27,9 +26,9 @@ export class User {
 @Injectable()
 export class AuthService {
   currentUser: User;
-  token: string;
+  currentToken: String;
   
-  constructor(private http: Http, private tokenManager: TokenService) {}
+  constructor(private http: Http) {}
 
   public login(credentials) {
     if (credentials.username === null || credentials.password === null) {
@@ -38,11 +37,22 @@ export class AuthService {
       return Observable.create(observer => {
         // At this point make a request to your backend to make a real check!    
         let loginUrl = `${baseUrl}/tokenlogin/?username=${credentials.username}&password=${credentials.password}`;
+        let userUrl = `${baseUrl}/userme/`;
         this.http.get(loginUrl)
         .map(res => res.json().token)
         .subscribe(token => {
-          console.log(token);
-          this.tokenManager.setToken(token);
+          console.log("Auth service token: " + token);
+          this.currentToken = token;
+          
+          let headers = new Headers();
+          headers.append("Authorization", `Token ${token}`);
+          
+          this.http.get(userUrl, { headers: headers })
+          .map(res => res.json())
+          .subscribe(user => {
+            console.log(user);
+          });
+          
           observer.next(true);
           observer.complete();  
         }, err => {
@@ -66,6 +76,10 @@ export class AuthService {
 
   public getUserInfo() : User {
     return this.currentUser;
+  }
+  
+  public getToken() : String {
+    return this.currentToken;
   }
 
   public logout() {
