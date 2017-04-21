@@ -26,7 +26,7 @@ export class User {
 @Injectable()
 export class AuthService {
   currentUser: User;
-  currentToken: String;
+  currentToken: string;
   
   constructor(private http: Http) {}
 
@@ -42,10 +42,10 @@ export class AuthService {
         .map(res => res.json().token)
         .subscribe(token => {
           console.log("Auth service token: " + token);
-          this.currentToken = token;
+          this.currentToken = `Token ${token}`;
           
           let headers = new Headers();
-          headers.append("Authorization", `Token ${token}`);
+          headers.append("Authorization", this.currentToken);
           
           this.http.get(userUrl, { headers: headers })
           .map(res => res.json())
