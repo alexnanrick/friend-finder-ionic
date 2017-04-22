@@ -30,9 +30,13 @@ export class HomePage {
   ionViewDidLoad() {
     this.show_map();
     
-    this.getCurrentLocation()
-      .subscribe((geo) => {
-        this.map.panTo(L.latLng(geo.lat, geo.lng));
+    this.getCurrentLocation().subscribe((geo) => {
+      var marker = L.marker(L.latLng(geo.lat, geo.lng))
+        .addTo(this.map)
+        .bindPopup("Me")
+        .openPopup();
+        
+      this.map.setView(L.latLng(geo.lat, geo.lng), 14);
     }, (error) => {
       console.log('An error occurred tracking location');
     })
