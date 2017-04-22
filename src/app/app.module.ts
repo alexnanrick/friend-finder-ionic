@@ -11,6 +11,7 @@ import { LoginPage } from "../pages/login/login"
 import { RegisterPage } from "../pages/register/register"
 
 import { AuthService } from '../providers/auth-service';
+import { Geolocation } from '@ionic-native/geolocation';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -41,8 +42,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
-    AuthService
+    Geolocation,
+    AuthService,
+    {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
 export class AppModule {}

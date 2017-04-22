@@ -13,23 +13,7 @@ export class AuthService {
   currentUser: User;
   currentToken: string;
   
-  constructor(private http: Http, private storage: Storage) {
-    if (this.currentToken == null) {
-      this.storage.ready().then(() => {
-        this.storage.get('token').then(token => {
-          this.currentToken = token;
-        });
-      })
-    }
-    
-    if (this.currentUser == null) {
-      this.storage.ready().then(() => {
-        this.storage.get('user').then(user => {
-          this.currentUser = user;
-        });
-      })
-    }
-  }
+  constructor(private http: Http, private storage: Storage) {}
   
   /*
     Using the details provided by the user, attempt to get a token from the api.
@@ -42,16 +26,13 @@ export class AuthService {
     } else {
       return Observable.create(observer => {
         let loginUrl = `${baseUrl}/tokenlogin/?username=${credentials.username}&password=${credentials.password}`;
-        let userUrl = `${baseUrl}/userme/`;
         this.http.get(loginUrl)
         .map(res => res.json().token)
         .subscribe(token => {
-          let user = new User(credentials.username);
-          this.setUserInfo(user);
-          this.setToken(`Token ${token}`);
-                            
-          observer.next(true);
-          observer.complete(); 
+          this.setToken(`Token ${token}`).subscribe(value => {
+            observer.next(true);
+            observer.complete(); 
+          });                  
         }, err => {
           observer.next(false);
         })
@@ -71,8 +52,19 @@ export class AuthService {
     }
   }
 
-  public getUserInfo() : User {
-    return this.currentUser;
+  public getUserInfo() : any {
+    return Observable.create(observer => {
+      this.storage.get('user').then(value => { 
+        if (value === null) {
+          let userUrl = `${baseUrl}/userme/`;
+        } else {
+          observer.next(value);
+        }
+      },
+      err => { 
+        observer.error(err);
+      });
+    })
   }
   
   public setUserInfo(user) {
@@ -82,15 +74,31 @@ export class AuthService {
     })
   }
   
-  public getToken() : string {
-    return this.currentToken;
+  public getToken() : any {
+    return Observable.create(observer => {
+      this.storage.get('token').then(value => { 
+        if (value === null) {
+          observer.error(new Error('No token found'));  
+        } else {
+          observer.next(value);
+        }
+      },
+      err => { 
+        observer.error(err);
+      });
+    })
   }
   
   public setToken(token) {
-    this.storage.ready().then(() => {
-      this.storage.set('token', token);
-      console.log("Token logged");
-    });
+    return Observable.create(observer => {
+      this.storage.ready().then(() => { 
+        this.storage.set('token', token).then(() => {
+          observer.next(true);
+        });
+      }).catch((err) => {
+          console.log(err);
+      });
+    })
   }
 
   public logout() {
