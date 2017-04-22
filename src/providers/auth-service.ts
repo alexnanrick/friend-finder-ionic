@@ -8,6 +8,8 @@ import 'rxjs';
 
 import { User } from '../models/user'
 
+import { UserService } from './user-service';
+
 @Injectable()
 export class AuthService {
   
@@ -23,8 +25,7 @@ export class AuthService {
       return Observable.throw("Please insert credentials");
     } else {
       return Observable.create(observer => {
-        let loginUrl = `${baseUrl}/tokenlogin/?username=${credentials.username}&password=${credentials.password}`;
-        this.http.get(loginUrl)
+        this.http.get(`${baseUrl}/tokenlogin/?username=${credentials.username}&password=${credentials.password}`)
         .map(res => res.json().token)
         .subscribe(token => {
           this.setToken(`Token ${token}`).subscribe(done => {
@@ -42,55 +43,11 @@ export class AuthService {
     if (credentials.username === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
     } else {
-      // At this point store the credentials to your backend!
       return Observable.create(observer => {
         observer.next(true);
         observer.complete();
       });
     }
-  }
-  
-  /*
-    Get a user object. If none exists in local storage, make a request to the 
-    api, store object in local storage and return object to user.
-  */
-  public getUserInfo() : any {
-    return Observable.create(observer => {
-      this.storage.get('user').then(value => { 
-        if (value === null) {
-          this.getToken().subscribe(token => {
-            let headers = new Headers();
-            headers.append('authorization', token)
-            
-            this.http.get(`${baseUrl}/userme/`, { headers: headers })
-            .subscribe(res => {
-              let user = res.json();
-              this.setUserInfo(user).subscribe(done => {
-                observer.next(user);
-                observer.complete(); 
-              })
-            })
-          });
-        } else {
-          observer.next(value);
-        }
-      },
-      err => { 
-        observer.error(err);
-      });
-    })
-  }
-  
-  public setUserInfo(user) {    
-    return Observable.create(observer => {
-      this.storage.ready().then(() => { 
-        this.storage.set('user', user).then(() => {
-          observer.next(true);
-        });
-      }).catch((err) => {
-          console.log(err);
-      });
-    })
   }
   
   public getToken() : any {
@@ -122,9 +79,10 @@ export class AuthService {
 
   public logout() {
     return Observable.create(observer => {
-      this.setUserInfo('');
-      observer.next(true);
-      observer.complete();
+      this.storage.set('user', '').then(() => {
+        observer.next(true);
+        observer.complete();
+      });
     });
   }
 

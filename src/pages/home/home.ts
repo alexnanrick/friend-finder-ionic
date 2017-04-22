@@ -4,25 +4,23 @@ import { mapUrl } from '../../config/config'
 import { Observable } from "rxjs/Observable";
 import * as L from 'leaflet';
 
-import { User } from '../../models/user'
-
 import { AuthService } from '../../providers/auth-service';
 import { GeoService } from '../../providers/geo-service';
+import { UserService } from '../../providers/user-service';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  private user: User;
   private map: L.Map;
 
-  constructor(private auth: AuthService, public geo: GeoService) {
+  constructor(private auth: AuthService, public geo: GeoService, private user: UserService) {
     this.auth.getToken().subscribe(token => {
       console.log("Home token: " + token);
     });
     
-    this.auth.getUserInfo().subscribe(user => {
+    this.user.getUserInfo().subscribe(user => {
       console.log("Home user: " + user);
     });
   }
