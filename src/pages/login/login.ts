@@ -22,9 +22,6 @@ export class LoginPage {
     private loadingCtrl: LoadingController
   ) {}
  
-  ionViewDidLoad() {
-  }
- 
   public createAccount() {
     this.nav.push(RegisterPage);
   }
