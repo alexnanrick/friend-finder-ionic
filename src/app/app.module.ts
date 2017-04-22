@@ -11,6 +11,8 @@ import { LoginPage } from "../pages/login/login"
 import { RegisterPage } from "../pages/register/register"
 
 import { AuthService } from '../providers/auth-service';
+import { GeoService } from '../providers/geo-service';
+
 import { Geolocation } from '@ionic-native/geolocation';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -44,6 +46,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     SplashScreen,
     Geolocation,
     AuthService,
+    GeoService,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { mapUrl } from '../../config/config'
+import { Observable } from "rxjs/Observable";
 import * as L from 'leaflet';
 
-import { AuthService } from '../../providers/auth-service';
 import { User } from '../../models/user'
-import { Geolocation } from '@ionic-native/geolocation';
-import { Observable } from "rxjs/Observable";
+
+import { AuthService } from '../../providers/auth-service';
+import { GeoService } from '../../providers/geo-service';
 
 @Component({
   selector: 'page-home',
@@ -15,9 +16,8 @@ import { Observable } from "rxjs/Observable";
 export class HomePage {
   private user: User;
   private map: L.Map;
-  private center: L.PointTuple;
 
-  constructor(private auth: AuthService, public geolocation: Geolocation) {
+  constructor(private auth: AuthService, public geo: GeoService) {
     this.auth.getToken().subscribe(token => {
       console.log("Home token: " + token);
     });
@@ -29,17 +29,7 @@ export class HomePage {
 
   ionViewDidLoad() {
     this.show_map();
-    
-    this.getCurrentLocation().subscribe((geo) => {
-      var marker = L.marker(L.latLng(geo.lat, geo.lng))
-        .addTo(this.map)
-        .bindPopup("Me")
-        .openPopup();
-        
-      this.map.setView(L.latLng(geo.lat, geo.lng), 14);
-    }, (error) => {
-      console.log('An error occurred tracking location');
-    })
+    this.updatePosition();
   }
 
   show_map() {
@@ -49,17 +39,17 @@ export class HomePage {
   }
   
   updatePosition() {
-    
+    this.geo.getCurrentLocation().subscribe((coords) => {
+      var marker = L.marker(L.latLng(coords.lat, coords.lng))
+        .addTo(this.map)
+        .bindPopup("Me")
+        .openPopup();
+        
+      this.map.setView(L.latLng(coords.lat, coords.lng), 14);
+    }, (error) => {
+      console.log('An error occurred tracking location');
+    })
   }
   
-  getCurrentLocation() {
-    return Observable.create(observer => {
-      this.geolocation.getCurrentPosition().then(location => {
-        observer.next({
-          lat: location.coords.latitude, 
-          lng: location.coords.longitude 
-        });
-      }).catch(err => observer.error(err));
-    });
-  }
+  
 }
