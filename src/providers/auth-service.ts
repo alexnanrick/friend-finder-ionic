@@ -10,8 +10,6 @@ import { User } from '../models/user'
 
 @Injectable()
 export class AuthService {
-  currentUser: User;
-  currentToken: string;
   
   constructor(private http: Http, private storage: Storage) {}
   
@@ -29,7 +27,7 @@ export class AuthService {
         this.http.get(loginUrl)
         .map(res => res.json().token)
         .subscribe(token => {
-          this.setToken(`Token ${token}`).subscribe(value => {
+          this.setToken(`Token ${token}`).subscribe(done => {
             observer.next(true);
             observer.complete(); 
           });                  
@@ -51,12 +49,28 @@ export class AuthService {
       });
     }
   }
-
+  
+  /*
+    Get a user object. If none exists in local storage, make a request to the 
+    api, store object in local storage and return object to user.
+  */
   public getUserInfo() : any {
     return Observable.create(observer => {
       this.storage.get('user').then(value => { 
         if (value === null) {
-          let userUrl = `${baseUrl}/userme/`;
+          this.getToken().subscribe(token => {
+            let headers = new Headers();
+            headers.append('authorization', token)
+            
+            this.http.get(`${baseUrl}/userme/`, { headers: headers })
+            .subscribe(res => {
+              let user = res.json();
+              this.setUserInfo(user).subscribe(done => {
+                observer.next(user);
+                observer.complete(); 
+              })
+            })
+          });
         } else {
           observer.next(value);
         }
@@ -67,10 +81,15 @@ export class AuthService {
     })
   }
   
-  public setUserInfo(user) {
-    this.storage.ready().then(() => {
-      this.storage.set('user', user);
-      console.log("User logged");
+  public setUserInfo(user) {    
+    return Observable.create(observer => {
+      this.storage.ready().then(() => { 
+        this.storage.set('user', user).then(() => {
+          observer.next(true);
+        });
+      }).catch((err) => {
+          console.log(err);
+      });
     })
   }
   
@@ -103,7 +122,7 @@ export class AuthService {
 
   public logout() {
     return Observable.create(observer => {
-      this.currentUser = null;
+      this.setUserInfo('');
       observer.next(true);
       observer.complete();
     });

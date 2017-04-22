@@ -22,9 +22,9 @@ export class HomePage {
       console.log("Home token: " + token);
     });
     
-    /*this.auth.getUserInfo().subscribe(user => {
-      console.log("Home token: " + user);
-    });*/
+    this.auth.getUserInfo().subscribe(user => {
+      console.log("Home user: " + user);
+    });
   }
 
   ionViewDidLoad() {
