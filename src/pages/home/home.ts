@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { mapUrl } from '../../config/config'
-import { Observable } from "rxjs/Observable";
-import { IonicPage, NavController } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 import * as L from 'leaflet';
 
 import { AuthService } from '../../providers/auth-service';

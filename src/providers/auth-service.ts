@@ -1,14 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Headers } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs/Observable';
 import { baseUrl } from '../config/config'
 import 'rxjs';
-
-import { User } from '../models/user'
-
-import { UserService } from './user-service';
 
 @Injectable()
 export class AuthService {
