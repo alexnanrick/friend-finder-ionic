@@ -5,6 +5,12 @@ import { Observable } from 'rxjs/Observable';
 import { baseUrl } from '../config/config'
 import 'rxjs';
 
+/*
+  Generated class for the FriendService provider.
+
+  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
+  for more info on providers and Angular 2 DI.
+*/
 @Injectable()
 export class AuthService {
   

@@ -14,9 +14,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class FriendService {
 
-  constructor(public http: Http, private auth: AuthService) {
-    console.log('Hello FriendService Provider');
-  }
+  constructor(public http: Http, private auth: AuthService) {}
   
   getFriends() {
     return Observable.create(observer => {

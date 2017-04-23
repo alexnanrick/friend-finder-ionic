@@ -7,6 +7,12 @@ import 'rxjs/add/operator/map';
 
 import { AuthService } from './auth-service';
 
+/*
+  Generated class for the FriendService provider.
+
+  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
+  for more info on providers and Angular 2 DI.
+*/
 export class User {
   username: string;
   email: string;
