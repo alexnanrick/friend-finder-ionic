@@ -16,16 +16,11 @@ import { FriendService } from '../../providers/friend-service';
 })
 export class HomePage {
   private map: L.Map;
-  public friends: any;
+  private friends: any;
+  private markers: any[];
 
   constructor(public nav: NavController, private auth: AuthService, private geo: GeoService, private user: UserService, private friend: FriendService) {
-    this.auth.getToken().subscribe(token => {
-      console.log("Home token: " + token);
-    });
-    
-    this.user.getUserInfo().subscribe(user => {
-      console.log("Home user: " + user);
-    });
+    this.markers = [];
   }
 
   ionViewDidLoad() {
@@ -46,9 +41,26 @@ export class HomePage {
     })
   }
   
+  toggleFriend(friend) {
+    console.log(friend.id);
+    let geom = L.latLng(friend.geometry.coordinates[1], friend.geometry.coordinates[0])
+    
+    if (this.markers[friend.id]) {
+        this.map.removeLayer(this.markers[friend.id]);
+        this.markers[friend.id] = null;
+    } else {
+        this.markers[friend.id] = L.marker(geom)
+        .addTo(this.map)
+        //.bindPopup(this.info)
+        .openPopup();
+
+        this.map.panTo(geom, 16);
+    }
+  }
+  
   updatePosition() {
     this.geo.getCurrentLocation().subscribe((coords) => {
-      let marker = L.marker(L.latLng(coords.lat, coords.lng))
+      L.marker(L.latLng(coords.lat, coords.lng))
         .addTo(this.map)
         .bindPopup("Me")
         .openPopup();
