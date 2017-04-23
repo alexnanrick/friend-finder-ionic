@@ -13,9 +13,7 @@ import 'rxjs';
 @Injectable()
 export class GeoService {
 
-  constructor(public http: Http, public geolocation: Geolocation) {
-    console.log('Hello GeoService Provider');
-  }
+  constructor(public http: Http, public geolocation: Geolocation) {}
   
   getCurrentLocation() {
     return Observable.create(observer => {

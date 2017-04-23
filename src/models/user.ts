@@ -1,69 +1,57 @@
+import { Geometry } from './geometry';
+
 export class User {
-  private _username: string;
-  private _email: string;
-  private _firstname: string;
-  private _lastname: string;
-  private _password: string;
-  private _latitude: string;
-  private _longitude: string;
+  private username: string;
+  private email: string;
+  private firstname: string;
+  private lastname: string;
+  private geometry: Geometry;
 
-  constructor(username: string) {
-    this._username = username;
+  constructor(username: string, email: string, firstname: string, lastname: string, geometry: Geometry) {
+    this.setUsername(username);
+    this.setEmail(email);
+    this.setFirstname(firstname);
+    this.setLastname(lastname);
+    this.setGeometry(geometry);
   }
 
-  get username(): string {
-    return this._username;
+  getUsername(): string {
+    return this.username;
   }
 
-  set username(value: string) {
-    this._username = value;
+  setUsername(value: string) {
+    this.username = value;
   }
 
-  get email(): string {
-    return this._email;
+  getEmail(): string {
+    return this.email;
   }
 
-  set email(value: string) {
-    this._email = value;
+  setEmail(value: string) {
+    this.email = value;
   }
 
-  get firstname(): string {
-    return this._firstname;
+  getFirstname(): string {
+    return this.firstname;
   }
 
-  set firstname(value: string) {
-    this._firstname = value;
+  setFirstname(value: string) {
+    this.firstname = value;
   }
 
-  get lastname(): string {
-    return this._lastname;
+  getLastname(): string {
+    return this.lastname;
   }
 
-  set lastname(value: string) {
-    this._lastname = value;
+  setLastname(value: string) {
+    this.lastname = value;
   }
-
-  get password(): string {
-    return this._password;
+  
+  getGeometry(): Geometry {
+    return this.geometry;
   }
-
-  set password(value: string) {
-    this._password = value;
-  }
-
-  get latitude(): string {
-    return this._latitude;
-  }
-
-  set latitude(value: string) {
-    this._latitude = value;
-  }
-
-  get longitude(): string {
-    return this._longitude;
-  }
-
-  set longitude(value: string) {
-    this._longitude = value;
+  
+  setGeometry(value: Geometry) {
+    this.geometry = value;
   }
 }

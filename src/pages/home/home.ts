@@ -26,11 +26,11 @@ export class HomePage {
   }
 
   ionViewDidLoad() {
-    this.show_map();
+    this.showMap();
     this.updatePosition();
   }
 
-  show_map() {
+  showMap() {
     this.map = L.map('map').setView([53.3, -6.3], 5);
     L.tileLayer(mapUrl, {'detectRetina': true})
       .addTo(this.map);
@@ -38,16 +38,15 @@ export class HomePage {
   
   updatePosition() {
     this.geo.getCurrentLocation().subscribe((coords) => {
-      var marker = L.marker(L.latLng(coords.lat, coords.lng))
+      let marker = L.marker(L.latLng(coords.lat, coords.lng))
         .addTo(this.map)
         .bindPopup("Me")
         .openPopup();
         
       this.map.setView(L.latLng(coords.lat, coords.lng), 14);
+      this.user.updateUserPosition(coords);
     }, (error) => {
       console.log('An error occurred tracking location');
     })
   }
-  
-  
 }

@@ -6,7 +6,8 @@ import { Observable } from 'rxjs/Observable';
 import { baseUrl } from '../config/config'
 import 'rxjs/add/operator/map';
 
-import { User } from '../../models/user'
+import { User } from '../models/user'
+import { Geometry } from '../models/geometry'
 
 import { AuthService } from './auth-service';
 
@@ -29,7 +30,20 @@ export class UserService {
     return Observable.create(observer => {
       this.storage.get('user').then(value => { 
         if (value === null) {
-          this.fetchUser(observer);
+          this.auth.getToken().subscribe(token => {
+            
+            let headers = new Headers();
+            headers.append('authorization', token);
+            this.http.get(`${baseUrl}/userme/`, { headers: headers })
+            .subscribe(res => {
+              let user = res.json();
+              this.setUserInfo(user).subscribe(done => {
+                observer.next(user);
+                observer.complete(); 
+              })
+            })
+            
+          });
         } else {
           observer.next(value);
         }
@@ -43,7 +57,9 @@ export class UserService {
   public setUserInfo(user) {    
     return Observable.create(observer => {
       this.storage.ready().then(() => { 
-        this.storage.set('user', user).then(() => {
+        let newGeometry = new Geometry(user.geometry.coordinates[0], user.geometry.coordinates[1], user.geometry.type);
+        let newUser = new User(user.properties.username, user.properties.email, user.properties.first_name, user.properties.last_name, newGeometry);
+        this.storage.set('user', newUser).then(() => {
           observer.next(true);
         });
       }).catch((err) => {
@@ -52,19 +68,9 @@ export class UserService {
     })
   }
   
-  public fetchUser(observer) {
-    this.auth.getToken().subscribe(token => {
-      let headers = new Headers();
-      headers.append('authorization', token)
-      
-      this.http.get(`${baseUrl}/userme/`, { headers: headers })
-      .subscribe(res => {
-        let user = res.json();
-        this.setUserInfo(user).subscribe(done => {
-          observer.next(user);
-          observer.complete(); 
-        })
-      })
+  public updateUserPosition(coords) {
+    this.getUserInfo().subscribe(user => {
+      user.latitude = coords.lat; 
     });
   }
 
