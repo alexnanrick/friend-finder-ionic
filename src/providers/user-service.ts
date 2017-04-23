@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, URLSearchParams } from '@angular/http';
 import { Headers } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs/Observable';
@@ -33,12 +33,12 @@ export class UserService {
           this.auth.getToken().subscribe(token => {
             
             let headers = new Headers();
-            headers.append('authorization', token);
+            headers.append('authorization', token);            
             this.http.get(`${baseUrl}/userme/`, { headers: headers })
             .subscribe(res => {
               let user = res.json();
-              this.setUserInfo(user).subscribe(done => {
-                observer.next(user);
+              this.setUserInfo(user).subscribe(newUser => {
+                observer.next(newUser);
                 observer.complete(); 
               })
             })
@@ -57,10 +57,10 @@ export class UserService {
   public setUserInfo(user) {    
     return Observable.create(observer => {
       this.storage.ready().then(() => { 
-        let newGeometry = new Geometry(user.geometry.coordinates[0], user.geometry.coordinates[1], user.geometry.type);
+        let newGeometry = new Geometry(user.geometry.coordinates[0], user.geometry.coordinates[1]);
         let newUser = new User(user.properties.username, user.properties.email, user.properties.first_name, user.properties.last_name, newGeometry);
         this.storage.set('user', newUser).then(() => {
-          observer.next(true);
+          observer.next(newUser);
         });
       }).catch((err) => {
           console.log(err);
@@ -70,7 +70,26 @@ export class UserService {
   
   public updateUserPosition(coords) {
     this.getUserInfo().subscribe(user => {
-      user.latitude = coords.lat; 
+      this.storage.ready().then(() => { 
+        let geometry = new Geometry(coords.lat, coords.lng);
+        user.geometry = geometry;
+        this.storage.set('user', user);
+        
+        this.auth.getToken().subscribe(token => {
+          let url = `${baseUrl}/updateposition/`;
+          let urlSearchParams = new URLSearchParams();
+          urlSearchParams.append('lat', coords.lat);
+          urlSearchParams.append('lon', coords.lng);
+          let headers = new Headers();
+          headers.append('Authorization', token);
+          headers.append("Content-Type", "application/x-www-form-urlencoded")
+          this.http.patch(url, urlSearchParams, { headers: headers })
+          .subscribe()
+          })
+        
+      });
+    }).catch((err) => {
+        console.log(err);
     });
   }
 

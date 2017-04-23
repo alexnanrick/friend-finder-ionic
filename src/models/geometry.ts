@@ -1,35 +1,25 @@
 export class Geometry {
-  private latitude: string;
-  private longitude: string;
-  private type: string;
-  
-  constructor(latitude: string, longitude: string, type: string) {
-    this.setLatitude(latitude);
-    this.setLongitude(longitude);
-    this.setType(type);
-  }
-  
-  getLatitude(): string {
-    return this.latitude;
+  private _latitude: string;
+  private _longitude: string;
+
+  constructor(latitude: string, longitude: string) {
+    this._latitude = latitude;
+    this._longitude = longitude;
   }
 
-  setLatitude(value: string) {
-    this.latitude = value;
+  get latitude(): string {
+    return this._latitude;
   }
 
-  getLongitude(): string {
-    return this.longitude;
+  set latitude(value: string) {
+    this._latitude = value;
   }
 
-  setLongitude(value: string) {
-    this.longitude = value;
+  get longitude(): string {
+    return this._longitude;
   }
-  
-  getType(): string {
-    return this.type;
-  }
-  
-  setType(value: string) {
-    this.type = value;
+
+  set longitude(value: string) {
+    this._longitude = value;
   }
 }

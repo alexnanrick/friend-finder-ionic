@@ -1,57 +1,58 @@
 import { Geometry } from './geometry';
 
 export class User {
-  private username: string;
-  private email: string;
-  private firstname: string;
-  private lastname: string;
-  private geometry: Geometry;
+  private _username: string;
+  private _email: string;
+  private _firstname: string;
+  private _lastname: string;
+  private _geometry: Geometry;
+
 
   constructor(username: string, email: string, firstname: string, lastname: string, geometry: Geometry) {
-    this.setUsername(username);
-    this.setEmail(email);
-    this.setFirstname(firstname);
-    this.setLastname(lastname);
-    this.setGeometry(geometry);
+    this._username = username;
+    this._email = email;
+    this._firstname = firstname;
+    this._lastname = lastname;
+    this._geometry = geometry;
   }
 
-  getUsername(): string {
-    return this.username;
+  get username(): string {
+    return this._username;
   }
 
-  setUsername(value: string) {
-    this.username = value;
+  set username(value: string) {
+    this._username = value;
   }
 
-  getEmail(): string {
-    return this.email;
+  get email(): string {
+    return this._email;
   }
 
-  setEmail(value: string) {
-    this.email = value;
+  set email(value: string) {
+    this._email = value;
   }
 
-  getFirstname(): string {
-    return this.firstname;
+  get firstname(): string {
+    return this._firstname;
   }
 
-  setFirstname(value: string) {
-    this.firstname = value;
+  set firstname(value: string) {
+    this._firstname = value;
   }
 
-  getLastname(): string {
-    return this.lastname;
+  get lastname(): string {
+    return this._lastname;
   }
 
-  setLastname(value: string) {
-    this.lastname = value;
+  set lastname(value: string) {
+    this._lastname = value;
   }
-  
-  getGeometry(): Geometry {
-    return this.geometry;
+
+  get geometry(): Geometry {
+    return this._geometry;
   }
-  
-  setGeometry(value: Geometry) {
-    this.geometry = value;
+
+  set geometry(value: Geometry) {
+    this._geometry = value;
   }
 }
