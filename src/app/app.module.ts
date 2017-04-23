@@ -13,6 +13,7 @@ import { RegisterPage } from "../pages/register/register"
 import { AuthService } from '../providers/auth-service';
 import { GeoService } from '../providers/geo-service';
 import { UserService } from '../providers/user-service';
+import { FriendService } from '../providers/friend-service';
 
 import { Geolocation } from '@ionic-native/geolocation';
 
@@ -49,6 +50,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     AuthService,
     GeoService,
     UserService,
+    FriendService,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

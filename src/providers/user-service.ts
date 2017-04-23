@@ -83,9 +83,8 @@ export class UserService {
           let headers = new Headers();
           headers.append('Authorization', token);
           headers.append("Content-Type", "application/x-www-form-urlencoded")
-          this.http.patch(url, urlSearchParams, { headers: headers })
-          .subscribe()
-          })
+          this.http.patch(url, urlSearchParams, { headers: headers }).subscribe()
+        })
         
       });
     }).catch((err) => {

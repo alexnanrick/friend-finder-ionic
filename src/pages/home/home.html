@@ -10,7 +10,9 @@
 
 
 <ion-content>
-
   <div id="map"></div>
-
+  
+  <ion-list id="friend-list">
+    <ion-item *ngFor="let friend of friends">{{friend.properties.username}}</ion-item>
+  </ion-list>
 </ion-content>
