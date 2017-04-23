@@ -18,10 +18,10 @@ export class User {
   email: string;
   firstname: string;
   lastname: string;
-  latitude: string;
-  longitude: string;
+  latitude: number;
+  longitude: number;
 
-  constructor(username: string, email: string, firstname: string, lastname: string, latitude: string, longitude: string) {
+  constructor(username: string, email: string, firstname: string, lastname: string, latitude: number, longitude: number) {
     this.username = username;
     this.email = email;
     this.firstname = firstname;
@@ -33,9 +33,15 @@ export class User {
 
 @Injectable()
 export class UserService {
-  private currentUser: User;
+  currentUser: User;
 
-  constructor(private http: Http, private storage: Storage, private auth: AuthService) {}
+  constructor(private http: Http, private storage: Storage, private auth: AuthService) {
+    if (this.currentUser == null) {
+      this.getUserInfo().subscribe(user => {
+        this.setUserInfo(user).subscribe();
+      })
+    }
+  }
   
   /*
     Get a user object. If none exists in local storage, make a request to the 
@@ -43,28 +49,26 @@ export class UserService {
   */
   public getUserInfo() : any {
     return Observable.create(observer => {
-      this.storage.get('user').then(value => { 
-        if (value === null) {
-          this.auth.getToken().subscribe(token => {
-            
-            let headers = new Headers();
-            headers.append('authorization', token);            
-            this.http.get(`${baseUrl}/userme/`, { headers: headers })
-            .subscribe(res => {
-              let user = res.json();
-              this.setUserInfo(user).subscribe(newUser => {
-                observer.next(newUser);
-                observer.complete(); 
-              })
-            })
-            
-          });
-        } else {
-          observer.next(value);
-        }
-      },
-      err => { 
-        observer.error(err);
+      this.auth.getToken().subscribe(token => {
+        let url = `${baseUrl}/userme/`;
+        
+        let headers = new Headers();
+        headers.append('authorization', token);
+                    
+        this.http.get(url, { headers: headers })
+        .subscribe(res => {
+          let user = res.json();
+          this.currentUser = new User(
+            user.properties.username, 
+            user.properties.email, 
+            user.properties.first_name, 
+            user.properties.last_name,
+            user.geometry.coordinates[1], 
+            user.geometry.coordinates[0]
+          );
+          observer.next(this.currentUser);
+        })
+        
       });
     })
   }
@@ -72,14 +76,6 @@ export class UserService {
   public setUserInfo(user) {    
     return Observable.create(observer => {
       this.storage.ready().then(() => { 
-        this.currentUser = new User(
-          user.properties.username, 
-          user.properties.email, 
-          user.properties.first_name, 
-          user.properties.last_name,
-          user.geometry.coordinates[1], 
-          user.geometry.coordinates[0]
-        );
         this.storage.set('user', this.currentUser).then(() => {
           observer.next(this.currentUser);
         });
@@ -97,14 +93,24 @@ export class UserService {
     
     this.auth.getToken().subscribe(token => {
       let url = `${baseUrl}/updateposition/`;
+      
       let urlSearchParams = new URLSearchParams();
       urlSearchParams.append('lat', coords.lat);
       urlSearchParams.append('lon', coords.lng);
+      
       let headers = new Headers();
       headers.append('Authorization', token);
-      headers.append("Content-Type", "application/x-www-form-urlencoded")
-      this.http.patch(url, urlSearchParams, { headers: headers }).subscribe()
+      headers.append("Content-Type", "application/x-www-form-urlencoded");
+      
+      return this.http.patch(url, urlSearchParams, { headers: headers });
     })
   }
-
+  
+  public getLatitude() {
+    return this.currentUser.latitude;
+  }
+  
+  public getLongitude() {
+    return this.currentUser.longitude;
+  }
 }

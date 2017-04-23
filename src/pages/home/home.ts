@@ -3,7 +3,6 @@ import { mapUrl } from '../../config/config'
 import { NavController } from 'ionic-angular';
 import * as L from 'leaflet';
 
-import { AuthService } from '../../providers/auth-service';
 import { GeoService } from '../../providers/geo-service';
 import { UserService } from '../../providers/user-service';
 import { FriendService } from '../../providers/friend-service';
@@ -17,16 +16,8 @@ export class HomePage {
   private friends: any;
   private markers: any[];
 
-  constructor(public nav: NavController, private auth: AuthService, private geo: GeoService, private user: UserService, private friend: FriendService) {
+  constructor(public nav: NavController, private geo: GeoService, private user: UserService, private friend: FriendService) {
     this.markers = [];
-    
-    this.auth.getToken().subscribe(token => {
-      console.log("Home token: " + token);
-    });
-    
-    this.user.getUserInfo().subscribe(user => {
-      console.log("Home user: " + user);
-    });
   }
 
   ionViewDidLoad() {
@@ -48,9 +39,10 @@ export class HomePage {
   }
   
   toggleFriend(friend) {
+    let currentLatLon = L.latLng(this.user.getLatitude(), this.user.getLongitude());
     let geom = L.latLng(friend.geometry.coordinates[1], friend.geometry.coordinates[0]);
-    //let distance = geom.distanceTo(myLatLon) < 1000 ? Math.round(geom.distanceTo(myLatLon)) + ' m' : Math.round(geom.distanceTo(myLatLon) / 1000) + ' km';
-    //let info = "<dl><dt>" + friend.properties.firstname + ' ' + friend.properties.lastname + "</dt>" + "<dd>" + distance + "</dd>";
+    let distance = geom.distanceTo(currentLatLon) < 1000 ? Math.round(geom.distanceTo(currentLatLon)) + ' m' : Math.round(geom.distanceTo(currentLatLon) / 1000) + ' km';
+    let info = "<dl><dt>" + friend.properties.first_name + ' ' + friend.properties.last_name + "</dt>" + "<dd>" + distance + "</dd>";
     
     if (this.markers[friend.id]) {
         this.map.removeLayer(this.markers[friend.id]);
@@ -58,7 +50,7 @@ export class HomePage {
     } else {
         this.markers[friend.id] = L.marker(geom)
         .addTo(this.map)
-        //.bindPopup(this.info)
+        .bindPopup(info)
         .openPopup();
 
         this.map.panTo(geom, 16);
