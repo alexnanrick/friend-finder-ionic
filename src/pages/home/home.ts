@@ -21,6 +21,14 @@ export class HomePage {
 
   constructor(public nav: NavController, private auth: AuthService, private geo: GeoService, private user: UserService, private friend: FriendService) {
     this.markers = [];
+    
+    this.auth.getToken().subscribe(token => {
+      console.log("Home token: " + token);
+    });
+    
+    this.user.getUserInfo().subscribe(user => {
+      console.log("Home user: " + user);
+    });
   }
 
   ionViewDidLoad() {
@@ -42,8 +50,9 @@ export class HomePage {
   }
   
   toggleFriend(friend) {
-    console.log(friend.id);
-    let geom = L.latLng(friend.geometry.coordinates[1], friend.geometry.coordinates[0])
+    let geom = L.latLng(friend.geometry.coordinates[1], friend.geometry.coordinates[0]);
+    //let distance = geom.distanceTo(myLatLon) < 1000 ? Math.round(geom.distanceTo(myLatLon)) + ' m' : Math.round(geom.distanceTo(myLatLon) / 1000) + ' km';
+    //let info = "<dl><dt>" + friend.properties.firstname + ' ' + friend.properties.lastname + "</dt>" + "<dd>" + distance + "</dd>";
     
     if (this.markers[friend.id]) {
         this.map.removeLayer(this.markers[friend.id]);

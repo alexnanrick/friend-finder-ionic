@@ -6,19 +6,29 @@ import { Observable } from 'rxjs/Observable';
 import { baseUrl } from '../config/config'
 import 'rxjs/add/operator/map';
 
-import { User } from '../models/user'
-import { Geometry } from '../models/geometry'
-
 import { AuthService } from './auth-service';
 
-/*
-  Generated class for the UserService provider.
+export class User {
+  username: string;
+  email: string;
+  firstname: string;
+  lastname: string;
+  latitude: string;
+  longitude: string;
 
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
+  constructor(username: string, email: string, firstname: string, lastname: string, latitude: string, longitude: string) {
+    this.username = username;
+    this.email = email;
+    this.firstname = firstname;
+    this.lastname = lastname;
+    this.latitude = latitude;
+    this.longitude = longitude;
+  }
+}
+
 @Injectable()
 export class UserService {
+  private currentUser: User;
 
   constructor(private http: Http, private storage: Storage, private auth: AuthService) {}
   
@@ -57,10 +67,16 @@ export class UserService {
   public setUserInfo(user) {    
     return Observable.create(observer => {
       this.storage.ready().then(() => { 
-        let newGeometry = new Geometry(user.geometry.coordinates[0], user.geometry.coordinates[1]);
-        let newUser = new User(user.properties.username, user.properties.email, user.properties.first_name, user.properties.last_name, newGeometry);
-        this.storage.set('user', newUser).then(() => {
-          observer.next(newUser);
+        this.currentUser = new User(
+          user.properties.username, 
+          user.properties.email, 
+          user.properties.first_name, 
+          user.properties.last_name,
+          user.geometry.coordinates[1], 
+          user.geometry.coordinates[0]
+        );
+        this.storage.set('user', this.currentUser).then(() => {
+          observer.next(this.currentUser);
         });
       }).catch((err) => {
           console.log(err);
@@ -69,27 +85,21 @@ export class UserService {
   }
   
   public updateUserPosition(coords) {
-    this.getUserInfo().subscribe(user => {
-      this.storage.ready().then(() => { 
-        let geometry = new Geometry(coords.lat, coords.lng);
-        user.geometry = geometry;
-        this.storage.set('user', user);
-        
-        this.auth.getToken().subscribe(token => {
-          let url = `${baseUrl}/updateposition/`;
-          let urlSearchParams = new URLSearchParams();
-          urlSearchParams.append('lat', coords.lat);
-          urlSearchParams.append('lon', coords.lng);
-          let headers = new Headers();
-          headers.append('Authorization', token);
-          headers.append("Content-Type", "application/x-www-form-urlencoded")
-          this.http.patch(url, urlSearchParams, { headers: headers }).subscribe()
-        })
-        
-      });
-    }).catch((err) => {
-        console.log(err);
-    });
+    this.currentUser.latitude = coords.lat;
+    this.currentUser.longitude = coords.lng;
+    
+    this.storage.set('user', this.currentUser);
+    
+    this.auth.getToken().subscribe(token => {
+      let url = `${baseUrl}/updateposition/`;
+      let urlSearchParams = new URLSearchParams();
+      urlSearchParams.append('lat', coords.lat);
+      urlSearchParams.append('lon', coords.lng);
+      let headers = new Headers();
+      headers.append('Authorization', token);
+      headers.append("Content-Type", "application/x-www-form-urlencoded")
+      this.http.patch(url, urlSearchParams, { headers: headers }).subscribe()
+    })
   }
 
 }
