@@ -83,7 +83,9 @@ export class UserService {
     this.currentUser.latitude = coords.lat;
     this.currentUser.longitude = coords.lng;
     
-    this.storage.set('user', this.currentUser);
+    this.storage.set('user', this.currentUser).then(() => {
+      console.log("User location saved to local storage");
+    });
     
     this.auth.getToken().subscribe(token => {
       let url = `${baseUrl}/updateposition/`;

@@ -16,6 +16,7 @@ import { UserService } from '../providers/user-service';
 import { FriendService } from '../providers/friend-service';
 
 import { Geolocation } from '@ionic-native/geolocation';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -47,6 +48,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     StatusBar,
     SplashScreen,
     Geolocation,
+    BackgroundGeolocation,
     AuthService,
     GeoService,
     UserService,

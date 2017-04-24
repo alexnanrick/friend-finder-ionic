@@ -12,9 +12,11 @@
 <ion-content>
   <div id="map"></div>
   
-  <ion-list id="friend-list">
-    <ion-item *ngFor="let friend of friends" (click)="toggleFriend(friend)">
-       {{friend.properties.username}}
-    </ion-item>
-  </ion-list>
+  <div id="friend-list">
+    <ion-list>
+      <ion-item *ngFor="let friend of friends" (click)="toggleFriend(friend)">
+         {{friend.properties.username}}
+      </ion-item>
+    </ion-list>
+  </div>
 </ion-content>

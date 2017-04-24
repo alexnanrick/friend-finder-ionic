@@ -13,17 +13,32 @@ import { FriendService } from '../../providers/friend-service';
 })
 export class HomePage {
   private map: L.Map;
+  private userMarker;
   private friends: any;
-  private markers: any[];
+  private friendMarkers: any[];
 
   constructor(public nav: NavController, private geo: GeoService, private user: UserService, private friend: FriendService) {
-    this.markers = [];
+    this.friendMarkers = [];
   }
 
   ionViewDidLoad() {
     this.showMap();
-    this.updatePosition();
     this.showFriends();
+    this.user.getUserInfo().subscribe(() => {
+      this.geo.startTracking().subscribe(coords => {
+        console.log(coords);
+        
+        if (this.userMarker) {
+          this.map.removeLayer(this.userMarker);
+        }
+        
+        this.userMarker = L.marker(L.latLng(coords.lat, coords.lng))
+          .addTo(this.map)
+          .bindPopup("Me")
+          .openPopup();
+        this.map.setView(L.latLng(coords.lat, coords.lng), 14);
+      });
+    }); 
   }
 
   showMap() {
@@ -44,32 +59,24 @@ export class HomePage {
     let distance = geom.distanceTo(currentLatLon) < 1000 ? Math.round(geom.distanceTo(currentLatLon)) + ' m' : Math.round(geom.distanceTo(currentLatLon) / 1000) + ' km';
     let info = "<dl><dt>" + friend.properties.first_name + ' ' + friend.properties.last_name + "</dt>" + "<dd>" + distance + "</dd>";
     
-    if (this.markers[friend.id]) {
-        this.map.removeLayer(this.markers[friend.id]);
-        this.markers[friend.id] = null;
+    if (this.friendMarkers[friend.id]) {
+        this.map.removeLayer(this.friendMarkers[friend.id]);
+        this.friendMarkers[friend.id] = null;
     } else {
-        this.markers[friend.id] = L.marker(geom)
+        this.friendMarkers[friend.id] = L.marker(geom)
         .addTo(this.map)
         .bindPopup(info)
         .openPopup();
-
         this.map.panTo(geom, 16);
     }
   }
   
-  updatePosition() {
-    this.geo.getCurrentLocation().subscribe((coords) => {
-      L.marker(L.latLng(coords.lat, coords.lng))
-        .addTo(this.map)
-        .bindPopup("Me")
-        .openPopup();
-        
-      this.map.setView(L.latLng(coords.lat, coords.lng), 14);
-      this.user.getUserInfo().subscribe(() => {
-        this.user.updateUserPosition(coords);
-      }); 
-    }, (error) => {
-      console.log('An error occurred tracking location');
-    })
+  updatePosition(coords) {
+    
+      
+    
+    this.user.getUserInfo().subscribe(() => {
+      this.user.updateUserPosition(coords);
+    }); 
   }
 }
