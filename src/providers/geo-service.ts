@@ -26,18 +26,22 @@ export class GeoService {
       // Background Tracking
       let config = {
         desiredAccuracy: 0,
-        stationaryRadius: 20,
-        distanceFilter: 10, 
+        stationaryRadius: 0,
+        distanceFilter: 0, 
         debug: true,
-        interval: 2000 
+        interval: 10000 
       };
      
-      this.backgroundGeolocation.configure(config).subscribe((location) => {
-        console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
+      this.backgroundGeolocation
+      .configure(config)
+      .subscribe((location) => {
+        console.log('Background location: ' + location.latitude + ',' + location.longitude);
+        
         // Run update inside of Angular's zone
         this.zone.run(() => {
           this.lat = location.latitude;
           this.lng = location.longitude;
+          this.user.updateUserPosition({lat: this.lat, lng: this.lng});
         });
      
       }, (err) => {
@@ -48,19 +52,24 @@ export class GeoService {
      
       // Foreground Tracking
       let options = {
-        frequency: 3000, 
-        enableHighAccuracy: true
+        frequency: 10000
       };
        
-      this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
-        console.log(position);
-        observer.next({lat: position.coords.latitude, lng: position.coords.longitude});
-        this.user.updateUserPosition({lat: position.coords.latitude, lng: position.coords.longitude});
+      this.watch = this.geolocation
+      .watchPosition(options)
+      .filter((p: any) => p.code === undefined)
+      .subscribe((position: Geoposition) => {
+        console.log('Foreground location: ' + position.coords.latitude + ',' + position.coords.longitude);
+        
         // Run update inside of Angular's zone
         this.zone.run(() => {
           this.lat = position.coords.latitude;
           this.lng = position.coords.longitude;
+          observer.next({lat: this.lat, lng: this.lng});
+          this.user.updateUserPosition({lat: this.lat, lng: this.lng});
         });
+      }, err => {
+        console.log("Error sub: " + err);
       });
     });
   }

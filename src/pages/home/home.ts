@@ -22,6 +22,7 @@ export class HomePage {
   }
 
   ionViewDidLoad() {
+    console.log("Logged in");
     this.showMap();
     this.showFriends();
     this.user.getUserInfo().subscribe(() => {
@@ -54,6 +55,7 @@ export class HomePage {
   }
   
   toggleFriend(friend) {
+    console.log("Friend toggled");
     let currentLatLon = L.latLng(this.user.getLatitude(), this.user.getLongitude());
     let geom = L.latLng(friend.geometry.coordinates[1], friend.geometry.coordinates[0]);
     let distance = geom.distanceTo(currentLatLon) < 1000 ? Math.round(geom.distanceTo(currentLatLon)) + ' m' : Math.round(geom.distanceTo(currentLatLon) / 1000) + ' km';
@@ -69,14 +71,5 @@ export class HomePage {
         .openPopup();
         this.map.panTo(geom, 16);
     }
-  }
-  
-  updatePosition(coords) {
-    
-      
-    
-    this.user.getUserInfo().subscribe(() => {
-      this.user.updateUserPosition(coords);
-    }); 
   }
 }
