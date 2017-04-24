@@ -35,19 +35,13 @@ export class User {
 export class UserService {
   currentUser: User;
 
-  constructor(private http: Http, private storage: Storage, private auth: AuthService) {
-    if (this.currentUser == null) {
-      this.getUserInfo().subscribe(user => {
-        this.setUserInfo(user).subscribe();
-      })
-    }
-  }
+  constructor(private http: Http, private storage: Storage, private auth: AuthService) {}
   
   /*
     Get a user object. If none exists in local storage, make a request to the 
     api, store object in local storage and return object to user.
   */
-  public getUserInfo() : any {
+  public getUserInfo() {
     return Observable.create(observer => {
       this.auth.getToken().subscribe(token => {
         let url = `${baseUrl}/userme/`;
@@ -102,7 +96,7 @@ export class UserService {
       headers.append('Authorization', token);
       headers.append("Content-Type", "application/x-www-form-urlencoded");
       
-      return this.http.patch(url, urlSearchParams, { headers: headers });
+      this.http.patch(url, urlSearchParams, { headers: headers }).subscribe();
     })
   }
   

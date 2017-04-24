@@ -65,7 +65,9 @@ export class HomePage {
         .openPopup();
         
       this.map.setView(L.latLng(coords.lat, coords.lng), 14);
-      this.user.updateUserPosition(coords);
+      this.user.getUserInfo().subscribe(() => {
+        this.user.updateUserPosition(coords);
+      }); 
     }, (error) => {
       console.log('An error occurred tracking location');
     })
