@@ -27,6 +27,10 @@ export class HomePage {
     console.log("Logged in");
     this.showMap();
     this.showFriends();
+    this.watchLocation();
+  }
+  
+  watchLocation() {
     this.user.getUserInfo().subscribe(() => {
       this.geo.startTracking().subscribe(coords => {
         console.log(coords);
@@ -46,11 +50,12 @@ export class HomePage {
         
         this.userMarker = L.marker(L.latLng(coords.lat, coords.lng), {icon: greenIcon})
           .addTo(this.map)
-          .bindPopup("Me")
-          .openPopup();
         
         if (this.initialLoad) {
           this.map.setView(L.latLng(coords.lat, coords.lng), 14);
+          this.userMarker
+          .bindPopup("Me")
+          .openPopup();
           this.initialLoad = false;
         }
       });
