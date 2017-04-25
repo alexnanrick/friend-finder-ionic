@@ -16,9 +16,11 @@ export class HomePage {
   private userMarker;
   private friends: any;
   private friendMarkers: any[];
+  private initialLoad: boolean;
 
   constructor(public nav: NavController, private geo: GeoService, private user: UserService, private friend: FriendService, private app: App) {
     this.friendMarkers = [];
+    this.initialLoad = true;
   }
 
   ionViewDidLoad() {
@@ -37,15 +39,15 @@ export class HomePage {
           .addTo(this.map)
           .bindPopup("Me")
           .openPopup();
-        this.map.setView(L.latLng(coords.lat, coords.lng), 14);
+        
+        if (this.initialLoad) {
+          this.map.setView(L.latLng(coords.lat, coords.lng), 14);
+          this.initialLoad = false;
+        }
       });
     }); 
   }
   
-  ngAfterViewInit(){
-    this.app._setDisableScroll(true);
-  }
-
   showMap() {
     this.map = L.map('map').setView([53.3, -6.3], 5);
     L.tileLayer(mapUrl, {'detectRetina': true})

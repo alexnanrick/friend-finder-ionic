@@ -25,11 +25,10 @@ export class GeoService {
     return Observable.create(observer => {
       // Background Tracking
       let config = {
-        desiredAccuracy: 0,
-        stationaryRadius: 0,
-        distanceFilter: 0, 
-        debug: true,
-        interval: 10000 
+        desiredAccuracy: 10,
+        stationaryRadius: 5,
+        distanceFilter: 1,
+        interval: 30000 
       };
      
       this.backgroundGeolocation
@@ -52,7 +51,7 @@ export class GeoService {
      
       // Foreground Tracking
       let options = {
-        frequency: 10000
+        frequency: 60000
       };
        
       this.watch = this.geolocation
