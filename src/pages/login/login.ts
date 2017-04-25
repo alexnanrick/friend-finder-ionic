@@ -5,26 +5,26 @@ import { RegisterPage } from '../register/register';
 import { HomePage } from '../home/home';
 
 import { AuthService } from '../../providers/auth-service';
- 
+
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html'
 })
 export class LoginPage {
   loading: Loading;
-  registerCredentials = {username: 'alex', password: 'test12345'};
- 
+  registerCredentials = {};
+
   constructor(
-    private nav: NavController, 
-    private auth: AuthService, 
-    private alertCtrl: AlertController, 
+    private nav: NavController,
+    private auth: AuthService,
+    private alertCtrl: AlertController,
     private loadingCtrl: LoadingController
   ) {}
- 
+
   public createAccount() {
     this.nav.push(RegisterPage);
   }
- 
+
   public login() {
     this.showLoading()
     this.auth.login(this.registerCredentials)
@@ -42,19 +42,19 @@ export class LoginPage {
       this.showError(error);
     });
   }
- 
+
   showLoading() {
     this.loading = this.loadingCtrl.create({
       content: 'Please wait...'
     });
     this.loading.present();
   }
- 
+
   showError(text) {
     setTimeout(() => {
       this.loading.dismiss();
     });
- 
+
     let alert = this.alertCtrl.create({
       title: 'Fail',
       subTitle: text,
