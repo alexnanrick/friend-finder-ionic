@@ -8,6 +8,8 @@ import { HomePage } from '../pages/home/home';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
+import { AuthService } from "../providers/auth-service";
+import { GeoService } from "../providers/geo-service";
 
 @Component({
   templateUrl: 'app.html'
@@ -15,21 +17,23 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  // make LoginPage the root (or first) page
+  // Make LoginPage the root (or first) page
   rootPage = LoginPage;
-  // rootPage = HomePage;
   pages: Array<{title: string, component: any}>;
 
   constructor(
     public platform: Platform,
     public menu: MenuController,
     public statusBar: StatusBar,
-    public splashScreen: SplashScreen
+    public splashScreen: SplashScreen,
+    public auth: AuthService,
+    public geo: GeoService
   ) {
     this.initializeApp();
 
     // set our app's pages
     this.pages = [
+      {title: 'Logout', component: null}
     ];
   }
 
@@ -46,6 +50,14 @@ export class MyApp {
     // close the menu when clicking a link from the menu
     this.menu.close();
     // navigate to the new page if it is not the current page
-    this.nav.setRoot(page.component);
+    if(page.component) {
+        this.nav.setRoot(page.component);
+    } else {
+      this.auth.logout().subscribe(() => {
+        this.geo.stopTracking();
+        // Redirect to home
+        this.nav.setRoot(LoginPage);
+      });
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { mapUrl } from '../../config/config'
-import { NavController } from 'ionic-angular';
+import { NavController, App } from 'ionic-angular';
 import * as L from 'leaflet';
 
 import { GeoService } from '../../providers/geo-service';
@@ -17,7 +17,7 @@ export class HomePage {
   private friends: any;
   private friendMarkers: any[];
 
-  constructor(public nav: NavController, private geo: GeoService, private user: UserService, private friend: FriendService) {
+  constructor(public nav: NavController, private geo: GeoService, private user: UserService, private friend: FriendService, private app: App) {
     this.friendMarkers = [];
   }
 
@@ -40,6 +40,10 @@ export class HomePage {
         this.map.setView(L.latLng(coords.lat, coords.lng), 14);
       });
     }); 
+  }
+  
+  ngAfterViewInit(){
+    this.app._setDisableScroll(true);
   }
 
   showMap() {
