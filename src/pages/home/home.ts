@@ -35,7 +35,16 @@ export class HomePage {
           this.map.removeLayer(this.userMarker);
         }
         
-        this.userMarker = L.marker(L.latLng(coords.lat, coords.lng))
+        var greenIcon = new L.Icon({
+          iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41]
+        });
+        
+        this.userMarker = L.marker(L.latLng(coords.lat, coords.lng), {icon: greenIcon})
           .addTo(this.map)
           .bindPopup("Me")
           .openPopup();
@@ -65,7 +74,7 @@ export class HomePage {
     let currentLatLon = L.latLng(this.user.getLatitude(), this.user.getLongitude());
     let geom = L.latLng(friend.geometry.coordinates[1], friend.geometry.coordinates[0]);
     let distance = geom.distanceTo(currentLatLon) < 1000 ? Math.round(geom.distanceTo(currentLatLon)) + ' m' : Math.round(geom.distanceTo(currentLatLon) / 1000) + ' km';
-    let info = "<dl><dt>" + friend.properties.first_name + ' ' + friend.properties.last_name + "</dt>" + "<dd>" + distance + "</dd>";
+    let info = "<dl>" + "<dt>" + friend.properties.first_name + ' ' + friend.properties.last_name + "</dt>" + "<dt>" + distance + "</dt>" + "</dl>";
     
     if (this.friendMarkers[friend.id]) {
         this.map.removeLayer(this.friendMarkers[friend.id]);
