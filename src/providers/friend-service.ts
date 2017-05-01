@@ -41,12 +41,18 @@ export class FriendService {
   addFriend(username) {
     return Observable.create(observer => {
       return this.auth.getToken().subscribe(token => {
+        let url = `${baseUrl}/friends/`;
+        
+        let friend_data = {
+          "username": username['username']
+        }
+        
         let headers = new Headers();
         headers.append('authorization', token);       
         headers.append("Content-Type", "application/json");
              
-        this.http.post(`${baseUrl}/addfriend/`, { headers: headers })
-        .subscribe(res => {
+        this.http.post(url, friend_data, { headers: headers })
+          .subscribe(res => {
           
         })
       });
