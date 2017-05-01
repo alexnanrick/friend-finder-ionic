@@ -19,8 +19,11 @@
   
   <div id="friend-list">
     <ion-list>
+      <ion-item (click)="setCurrentLocation()">
+        {{ username }}
+      </ion-item>
       <ion-item *ngFor="let friend of friends" (click)="toggleFriend(friend)">
-         {{friend.properties.username}}
+         {{ friend.properties.username }}
       </ion-item>
     </ion-list>
   </div>

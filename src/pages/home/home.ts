@@ -17,10 +17,21 @@ export class HomePage {
   private friends: any;
   private friendMarkers: any[];
   private initialLoad: boolean;
+  private greenIcon;
+  private username;
 
   constructor(public nav: NavController, private geo: GeoService, private user: UserService, private friend: FriendService, private app: App) {
     this.friendMarkers = [];
     this.initialLoad = true;
+    
+    this.greenIcon = new L.Icon({
+      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
   }
 
   ionViewDidLoad() {
@@ -32,6 +43,8 @@ export class HomePage {
   
   watchLocation() {
     this.user.getUserInfo().subscribe(() => {
+      this.username = this.user.getUsername();
+      
       this.geo.startTracking().subscribe(coords => {
         console.log(coords);
         
@@ -39,27 +52,31 @@ export class HomePage {
           this.map.removeLayer(this.userMarker);
         }
         
-        var greenIcon = new L.Icon({
-          iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-          shadowSize: [41, 41]
-        });
-        
-        this.userMarker = L.marker(L.latLng(coords.lat, coords.lng), {icon: greenIcon})
+        this.userMarker = L.marker(L.latLng(coords.lat, coords.lng), {icon: this.greenIcon})
           .addTo(this.map)
         
         if (this.initialLoad) {
           this.map.setView(L.latLng(coords.lat, coords.lng), 14);
           this.userMarker
-          .bindPopup("Me")
-          .openPopup();
+            .bindPopup(this.username)
+            .openPopup();
           this.initialLoad = false;
         }
       });
     }); 
+  }
+  
+  setCurrentLocation() {
+    if (this.userMarker) {
+      this.map.removeLayer(this.userMarker);
+    }
+    
+    this.userMarker = L.marker(L.latLng(this.user.getLatitude(), this.user.getLongitude()), {icon: this.greenIcon})
+      .addTo(this.map)
+    this.map.setView(L.latLng(this.user.getLatitude(), this.user.getLongitude()), 14);
+    this.userMarker
+      .bindPopup(this.username)
+      .openPopup();
   }
   
   showMap() {
@@ -86,9 +103,9 @@ export class HomePage {
         this.friendMarkers[friend.id] = null;
     } else {
         this.friendMarkers[friend.id] = L.marker(geom)
-        .addTo(this.map)
-        .bindPopup(info)
-        .openPopup();
+          .addTo(this.map)
+          .bindPopup(info)
+          .openPopup();
         this.map.panTo(geom, 16);
     }
   }

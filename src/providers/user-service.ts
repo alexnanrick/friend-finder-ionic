@@ -103,6 +103,10 @@ export class UserService {
     })
   }
   
+  public getUsername() {
+    return this.currentUser.username;
+  }
+  
   public getLatitude() {
     return this.currentUser.latitude;
   }

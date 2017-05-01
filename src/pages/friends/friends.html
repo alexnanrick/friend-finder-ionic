@@ -13,10 +13,10 @@
 </ion-header>
 
 <ion-content>
+  <ion-item-divider>Friend List</ion-item-divider>
   <ion-list>
- 
         <ion-item-sliding *ngFor="let friend of friends">
- 
+            
             <ion-item>
                 {{friend.properties.username}}
             </ion-item>
@@ -26,8 +26,11 @@
                     <ion-icon name="trash"></ion-icon>
                 </button>
             </ion-item-options>
- 
+
         </ion-item-sliding>
- 
     </ion-list>
+    
+    <ion-item-divider>Requests Sent</ion-item-divider>
+    
+    <ion-item-divider>Requests Recieved</ion-item-divider>
 </ion-content>
