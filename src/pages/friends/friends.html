@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Friends</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-right (click)="addFriend()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+ 
+        <ion-item-sliding *ngFor="let friend of friends">
+ 
+            <ion-item>
+                {{friend.properties.username}}
+            </ion-item>
+ 
+            <ion-item-options>
+                <button color="danger" ion-button icon-only (click)="deleteFriend(friend)">
+                    <ion-icon name="trash"></ion-icon>
+                </button>
+            </ion-item-options>
+ 
+        </ion-item-sliding>
+ 
+    </ion-list>
+</ion-content>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, URLSearchParams } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs/Observable';
 import { baseUrl } from '../config/config'
@@ -88,17 +88,18 @@ export class UserService {
     });
     
     this.auth.getToken().subscribe(token => {
-      let url = `${baseUrl}/updateposition/`;
+      let url = `${baseUrl}/position/`;
       
-      let urlSearchParams = new URLSearchParams();
-      urlSearchParams.append('lat', coords.lat);
-      urlSearchParams.append('lon', coords.lng);
+      let geo_data = {
+        'lat': coords.lat,
+        'lon': coords.lng
+      }
       
       let headers = new Headers();
       headers.append('Authorization', token);
-      headers.append("Content-Type", "application/x-www-form-urlencoded");
+      headers.append("Content-Type", "application/json");
       
-      this.http.patch(url, urlSearchParams, { headers: headers }).subscribe();
+      this.http.patch(url, geo_data, { headers: headers }).subscribe();
     })
   }
   

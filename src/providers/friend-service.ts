@@ -19,9 +19,12 @@ export class FriendService {
   getFriends() {
     return Observable.create(observer => {
       return this.auth.getToken().subscribe(token => {
+        let url = `${baseUrl}/friendlist/`;
+        
         let headers = new Headers();
-        headers.append('authorization', token);            
-        this.http.get(`${baseUrl}/friends/`, { headers: headers })
+        headers.append('authorization', token);     
+               
+        this.http.get(url, { headers: headers })
         .subscribe(res => {
           let friends = res.json().features; 
       
@@ -33,6 +36,25 @@ export class FriendService {
         })
       });
     });
+  }
+  
+  addFriend(username) {
+    return Observable.create(observer => {
+      return this.auth.getToken().subscribe(token => {
+        let headers = new Headers();
+        headers.append('authorization', token);       
+        headers.append("Content-Type", "application/json");
+             
+        this.http.post(`${baseUrl}/addfriend/`, { headers: headers })
+        .subscribe(res => {
+          
+        })
+      });
+    })
+  }
+  
+  removeFriend() {
+    
   }
 
 }

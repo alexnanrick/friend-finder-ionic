@@ -12,7 +12,7 @@ import { AuthService } from '../../providers/auth-service';
 })
 export class LoginPage {
   loading: Loading;
-  registerCredentials = {};
+  registerCredentials = {username: 'alex', password: 'test12345'};
 
   constructor(
     private nav: NavController,

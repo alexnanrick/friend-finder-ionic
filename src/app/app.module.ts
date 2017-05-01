@@ -7,8 +7,9 @@ import { IonicStorageModule } from '@ionic/storage';
 import { MyApp } from './app.component';
 
 import { HomePage } from '../pages/home/home';
-import { LoginPage } from "../pages/login/login"
-import { RegisterPage } from "../pages/register/register"
+import { LoginPage } from "../pages/login/login";
+import { RegisterPage } from "../pages/register/register";
+import { FriendPage } from '../pages/friends/friends';
 
 import { AuthService } from '../providers/auth-service';
 import { GeoService } from '../providers/geo-service';
@@ -26,7 +27,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     MyApp,
     HomePage,
     LoginPage,
-    RegisterPage
+    RegisterPage,
+    FriendPage
   ],
   imports: [
     BrowserModule,
@@ -42,7 +44,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     MyApp,
     HomePage,
     LoginPage,
-    RegisterPage
+    RegisterPage,
+    FriendPage
   ],
   providers: [
     StatusBar,

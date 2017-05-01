@@ -4,6 +4,7 @@ import { Platform, MenuController, Nav } from 'ionic-angular';
 
 import { LoginPage } from "../pages/login/login";
 import { HomePage } from '../pages/home/home';
+import { FriendPage } from '../pages/friends/friends';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -18,7 +19,7 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   // Make LoginPage the root (or first) page
-  rootPage = LoginPage;
+  rootPage = HomePage;
   pages: Array<{title: string, component: any}>;
 
   constructor(
@@ -33,6 +34,8 @@ export class MyApp {
 
     // set our app's pages
     this.pages = [
+      {title: 'Home', component: HomePage},
+      {title: 'Friend List', component: FriendPage},
       {title: 'Logout', component: null}
     ];
   }
@@ -52,6 +55,7 @@ export class MyApp {
     // navigate to the new page if it is not the current page
     if(page.component) {
         this.nav.setRoot(page.component);
+
     } else {
       this.auth.logout().subscribe(() => {
         this.geo.stopTracking();

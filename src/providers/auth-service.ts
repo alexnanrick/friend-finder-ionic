@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs/Observable';
 import { baseUrl } from '../config/config'
@@ -26,17 +26,28 @@ export class AuthService {
       return Observable.throw("Please insert credentials");
     } else {
       return Observable.create(observer => {
-        this.http.get(`${baseUrl}/tokenlogin/?username=${credentials.username}&password=${credentials.password}`)
-        .map(res => res.json().token)
-        .subscribe(token => {
-          this.setToken(`Token ${token}`).subscribe(done => {
-            observer.next(true);
-            observer.complete(); 
-          });                  
-        }, err => {
-          observer.next(false);
-        })
-      });
+        let url = `${baseUrl}/tokenlogin/`;
+        
+        let headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        let options = new RequestOptions({ headers: headers });
+        
+        let login_data = {
+          "username": credentials.username, 
+          "password": credentials.password
+        };
+        
+        this.http.post(url, JSON.stringify(login_data), options)
+          .map(res => res.json().token)
+          .subscribe(token => {
+            this.setToken(`Token ${token}`).subscribe(done => {
+              observer.next(true);
+              observer.complete(); 
+            });                  
+          }, err => {
+            observer.next(false);
+          })
+        });
     }
   }
 
