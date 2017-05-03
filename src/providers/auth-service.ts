@@ -56,9 +56,25 @@ export class AuthService {
       return Observable.throw("Please insert credentials");
     } else {
       return Observable.create(observer => {
-        observer.next(true);
-        observer.complete();
-      });
+        let url = `${baseUrl}/register/`;
+        
+        let headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        let options = new RequestOptions({ headers: headers });
+        
+        let register_data = {
+          "username": credentials.username, 
+          "password": credentials.password
+        };
+        
+        this.http.post(url, register_data, options)
+          .subscribe(done => {
+            observer.next(true);
+            observer.complete();       
+          }, err => {
+            observer.next(false);
+          })
+        });
     }
   }
   
