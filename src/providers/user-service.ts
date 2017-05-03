@@ -20,14 +20,16 @@ export class User {
   lastname: string;
   latitude: number;
   longitude: number;
+  modified: string;
 
-  constructor(username: string, email: string, firstname: string, lastname: string, latitude: number, longitude: number) {
+  constructor(username: string, email: string, firstname: string, lastname: string, latitude: number, longitude: number, modified: string) {
     this.username = username;
     this.email = email;
     this.firstname = firstname;
     this.lastname = lastname;
     this.latitude = latitude;
     this.longitude = longitude;
+    this.modified = modified;
   }
 }
 
@@ -58,7 +60,8 @@ export class UserService {
             user.properties.first_name, 
             user.properties.last_name,
             user.geometry.coordinates[1], 
-            user.geometry.coordinates[0]
+            user.geometry.coordinates[0],
+            user.properties.modified
           );
           observer.next(this.currentUser);
         })

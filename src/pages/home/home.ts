@@ -96,7 +96,11 @@ export class HomePage {
     let currentLatLon = L.latLng(this.user.getLatitude(), this.user.getLongitude());
     let geom = L.latLng(friend.geometry.coordinates[1], friend.geometry.coordinates[0]);
     let distance = geom.distanceTo(currentLatLon) < 1000 ? Math.round(geom.distanceTo(currentLatLon)) + ' m' : Math.round(geom.distanceTo(currentLatLon) / 1000) + ' km';
-    let info = "<dl>" + "<dt>" + friend.properties.first_name + ' ' + friend.properties.last_name + "</dt>" + "<dt>" + distance + "</dt>" + "</dl>";
+    let past: Date = new Date(friend.properties.modified);
+    let now = new Date();
+    let diff = this.msToTime(+now - +past);
+    
+    let info = "<dl>" + "<dt>" + friend.properties.first_name + ' ' + friend.properties.last_name + "</dt>" + "<dt>" + 'Distance: ' + distance + "</dt>" + "<dt>" + 'Last Update: ' + diff + "</dt>" + "</dl>";
     
     if (this.friendMarkers[friend.id]) {
         this.map.removeLayer(this.friendMarkers[friend.id]);
@@ -108,5 +112,22 @@ export class HomePage {
           .openPopup();
         this.map.panTo(geom, 16);
     }
+  }
+  
+  msToTime(s) {
+    var ms = s % 1000;
+    s = (s - ms) / 1000;
+    var secs = s % 60;
+    s = (s - secs) / 60;
+    var mins = s % 60;
+    var hrs = (s - mins) / 60;
+    if(hrs==0 && mins==0)
+      return 'just a moment ago';
+    else if(hrs==0)
+      return mins+' mins ago';
+    else if(hrs<24)
+      return hrs+' hours ago';
+    else
+      return Math.floor(hrs/24)+' days ago';
   }
 }
