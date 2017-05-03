@@ -36,9 +36,7 @@ export class FriendPage {
         {
           text: 'Add',
           handler: data => {
-            this.friend.addFriend(data).subscribe( {
-              
-            });
+            this.friend.addFriend(data).subscribe({});
           }
         }
       ]
@@ -49,10 +47,12 @@ export class FriendPage {
   showFriends() {
     this.friend.getFriends().subscribe(friends => {
       this.friends = friends;
-    })
+    });
   }
   
-  deleteFriend(Friend) {
-    
+  deleteFriend(friend) {
+    this.friend.deleteFriend(friend).subscribe(done => {
+      this.showFriends();
+    });
   }
 }

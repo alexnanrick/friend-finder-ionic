@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { baseUrl } from '../config/config'
 import { AuthService } from './auth-service';
 import { Observable } from 'rxjs/Observable';
@@ -52,15 +52,32 @@ export class FriendService {
         headers.append("Content-Type", "application/json");
              
         this.http.post(url, friend_data, { headers: headers })
-          .subscribe(res => {
-          
-        })
+          .subscribe(res => {})
       });
     })
   }
   
-  removeFriend() {
-    
+  deleteFriend(friend) {
+    return Observable.create(observer => {
+      return this.auth.getToken().subscribe(token => {
+        let url = `${baseUrl}/friends/`;
+        
+        let friend_data = {
+          "username": friend.properties.username
+        }
+        
+        let headers = new Headers();
+        headers.append('authorization', token);       
+        headers.append("Content-Type", "application/json");
+        
+        let options = new RequestOptions({ body: friend_data, headers: headers });
+        
+        this.http.delete(url, options)
+          .subscribe(res => {
+            observer.next();
+          })
+      });
+    })
   }
 
 }
